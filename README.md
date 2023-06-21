@@ -1,14 +1,17 @@
 # SSRT: Intra-and-Cross View Attention for Stereo Image Super-Resolution  
 
-official codes, `train.py` is coming soon.
+All codes will be released after paper is publised.
 
 ## Environment
 
 ```python
-python 3.8.12
-pytorch 1.8.0
-cuda 11.2
+python >= 3.9.16
+pytorch >= 1.12.0
+cuda >= 11.4
+natten
 ```
+
+package `natten` can be installed with `pip install natten -f https://shi-labs.com/natten/wheels/cu113/torch1.12/index.html ` or refer to https://www.shi-labs.com/natten/.
 
 ## Quick Start
 
