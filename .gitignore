@@ -1,0 +1,4 @@
+__pycache__/
+log/
+code/model/
+code/train.py
