@@ -26,21 +26,23 @@ cd code
 - x4
 
   ```
-  python -m torch.distributed.launch --nproc_per_node 4 \
-          train.py --save_dir ssrt_2x12_4x --batch_size 32 --gpu_ids 0,1,2,3 \
-          --arch ssrt --num_feats 64 --num_heads 4 --depths 2*12 --window_size 16 --num_cats 0 --upscale 4 \
-          --lr 2e-3 --wd 1e-4 --drop_path_rate 0.1 --beta2 0.9 --total_iter 200000 \
-          --scheduler_name cosine --periods 200e3 --min_lrs 1e-6 --warmup_steps 0 --mixup 0.7
+
+  python train.py --save_dir ssrt_4x --batch_size 32 --gpu_ids 3\
+        --arch ssrt --num_feats 64 --num_heads 4 --depths 1*12 --kernel_size 9 --window_size 16 --num_cats 0 --upscale 4\
+        --lr 2e-3 --wd 1e-4 --drop_path_rate 0.1 --beta2 0.9 --total_iter 200000\
+        --scheduler_name cosine --periods 200e3 --min_lrs 1e-6 --warmup_steps 0 --mixup 0.7 --use_checkpoint
+
   ```
 
 - x2
 
   ```
-  python -m torch.distributed.launch --nproc_per_node 4 \
-          train.py --save_dir ssrt_2x12_2x --batch_size 32 --gpu_ids 1,4,6,8 \
-          --arch ssrt --num_feats 64 --num_heads 4 --depths 2*12 --window_size 16 --num_cats 0 --upscale 2 \
-          --lr 2e-3 --wd 1e-4 --drop_path_rate 0.1 --beta2 0.9 --total_iter 200000 \
-          --scheduler_name cosine --periods 200e3 --min_lrs 1e-6 --warmup_steps 0 --mixup 0.7
+
+  python train.py --save_dir ssrt_2x --batch_size 32 --gpu_ids 4\
+  --arch ssrt --num_feats 64 --num_heads 4 --depths 1*12 --kernel_size 9 --window_size 16 --num_cats 0 --upscale 2\
+  --lr 2e-3 --wd 1e-4 --drop_path_rate 0.1 --beta2 0.9 --total_iter 200000\
+  --scheduler_name cosine --periods 200e3 --min_lrs 1e-6 --warmup_steps 0 --mixup 0.7 --use_checkpoint
+
   ```
 
 ### Testing
@@ -50,17 +52,15 @@ cd code
   - x4
 
   ```
-  python test.py --save_dir ssrt_2x12_4x --device cuda:0 --arch ssrt --depths 2*12 \
-                 --upscale 4 --num_feats 64 --num_heads 4  --window_size 16 --num_cats 4 \
-  			   --checkpoint ./SSRT_x4.tar
+  python test.py --save_dir ssrt_4x --upscale 4 --num_heads 4 --num_feats 64 --depths 1*12 --window_size 16 --arch ssrt --kernel_size 9 \
+			--num_cats 4 --checkpoint ./SSRT_x4.tar --device cuda:0
   ```
 
   - x2
 
   ```
-  python test.py --save_dir ssrt_2x12_2x --device cuda:0 --arch ssrt --depths 2*12 \
-                 --upscale 2 --num_feats 64 --num_heads 4  --window_size 16 --num_cats 4 \
-  			   --checkpoint ./SSRT_x2.tar
+  python test.py --save_dir ssrt_2x --upscale 2 --num_heads 4 --num_feats 64 --depths 1*12 --window_size 16 --arch ssrt --kernel_size 9 \
+			--num_cats 4 --checkpoint ./SSRT_x2.tar --device cuda:0
   ```
 
   

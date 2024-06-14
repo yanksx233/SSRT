@@ -20,6 +20,7 @@ def get_args():
     parser.add_argument('--depths', type=str, default='2*11')
     parser.add_argument('--num_heads', type=int, default=2)
     parser.add_argument('--num_feats', type=int, default=64)
+    parser.add_argument('--kernel_size', type=int, default=9)
     parser.add_argument('--window_size', type=int, default=16)
     parser.add_argument('--num_cats', type=int, default=0)
     parser.add_argument('--upscale', type=int, default=4)
@@ -41,7 +42,8 @@ def get_args():
 
     # mode
     parser.add_argument('--mode', type=str, default='val')
-
+    parser.add_argument('--sisr', action='store_true')
+    
     args = parser.parse_args()
     return args
 
@@ -63,7 +65,11 @@ def test(model, logger, test_loader, device):
             lr_left, lr_right, hr_left, hr_right = sample['lr0'].to(device), sample['lr1'].to(device), \
                                                    sample['hr0'].to(device), sample['hr1'].to(device)
 
-            sr_left, sr_right = model(lr_left, lr_right)
+            if args.sisr:
+                sr_left = model(lr_left)
+                sr_right = model(lr_right)
+            else:
+                sr_left, sr_right = model(lr_left, lr_right)
             sr_left = torch.clamp(sr_left, 0., 1.)
             sr_right = torch.clamp(sr_right, 0., 1.)
 
@@ -81,8 +87,8 @@ def test(model, logger, test_loader, device):
         psnr_all = float(np.array(psnr_all).mean())
         ssim_all = float(np.array(ssim_all).mean())
 
-        logger.debug(f'The average psnr: left -- {psnr_crop:.5f},  left+right -- {psnr_all:.5f}')
-        logger.debug(f'The average ssim: left -- {ssim_crop:.5f},  left+right -- {ssim_all:.5f}')
+        logger.debug(f'The average psnr: left -- {psnr_crop:.2f},  left+right -- {psnr_all:.2f}')
+        logger.debug(f'The average ssim: left -- {ssim_crop:.4f},  left+right -- {ssim_all:.4f}')
 
         return psnr_all, ssim_all
 
@@ -90,7 +96,8 @@ def test(model, logger, test_loader, device):
 if __name__ == '__main__':
     args = get_args()
     logger = get_logger(args.log_dir, args.save_dir, args.mode, args)
-    
+    device = torch.device(args.device)
+    torch.cuda.set_device(device)
     datasets = ['Flickr1024', 'Flickr1024_val', 'KITTI2012', 'KITTI2015', 'Middlebury', 'ETH3D']
     # datasets = ['Flickr1024_val', 'ETH3D']
     iters = np.arange(args.start_iter, args.end_iter+1, args.step)

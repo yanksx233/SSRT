@@ -19,6 +19,7 @@ def get_args():
     parser.add_argument('--depths', type=str, default='2*12')
     parser.add_argument('--num_heads', type=int, default=2)
     parser.add_argument('--num_feats', type=int, default=64)
+    parser.add_argument('--kernel_size', type=int, default=9)
     parser.add_argument('--window_size', type=int, default=16)
     parser.add_argument('--num_cats', type=int, default=0)
     parser.add_argument('--upscale', type=int, default=4)
@@ -56,6 +57,7 @@ def test(args, logger, model):
     test_loader = DataLoader(testset, batch_size=1, num_workers=4, shuffle=False)
 
     result_path = os.path.join(args.log_dir, args.save_dir, args.mode, 'result', args.testset)
+    logger.debug(f'save SR image to {result_path}')
     os.mkdir(result_path)
 
     model.eval()
@@ -101,8 +103,12 @@ def test(args, logger, model):
 if __name__ == '__main__':
     args = get_args()
     logger = get_logger(args.log_dir, args.save_dir, args.mode, args)
+    device = torch.device(args.device)
+    torch.cuda.set_device(device)
+    
     # dataset = ['Flickr1024', 'Flickr1024_val', 'KITTI2012', 'KITTI2015', 'Middlebury', 'ETH3D']
     dataset = ['Middlebury', 'ETH3D']
+    # dataset = ['Holopix50k']
 
     model = build_model(args).to(args.device)
     torch.backends.cudnn.benchmark = True
@@ -117,5 +123,5 @@ if __name__ == '__main__':
     
     for i in range(len(dataset)):
         args.testset = dataset[i]
-        model.num_cats = args.num_cats if args.testset == 'ETH3D' else 0
+        model.num_cats = args.num_cats if args.testset in ['ETH3D', 'Holopix50k'] else 0
         test(args, logger, model)
