@@ -39,9 +39,9 @@ cd code
   ```
 
   python train.py --save_dir ssrt_2x --batch_size 32 --gpu_ids 4\
-  --arch ssrt --num_feats 64 --num_heads 4 --depths 1*12 --kernel_size 9 --window_size 16 --num_cats 0 --upscale 2\
-  --lr 2e-3 --wd 1e-4 --drop_path_rate 0.1 --beta2 0.9 --total_iter 200000\
-  --scheduler_name cosine --periods 200e3 --min_lrs 1e-6 --warmup_steps 0 --mixup 0.7 --use_checkpoint
+		  --arch ssrt --num_feats 64 --num_heads 4 --depths 1*12 --kernel_size 9 --window_size 16 --num_cats 0 --upscale 2\
+		  --lr 2e-3 --wd 1e-4 --drop_path_rate 0.1 --beta2 0.9 --total_iter 200000\
+		  --scheduler_name cosine --periods 200e3 --min_lrs 1e-6 --warmup_steps 0 --mixup 0.7 --use_checkpoint
 
   ```
 
