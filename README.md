@@ -1,6 +1,6 @@
 # SSRT: Intra-and-Cross View Attention for Stereo Image Super-Resolution  
 
-All codes will be released after paper is publised.
+official code
 
 ## Environment
 
